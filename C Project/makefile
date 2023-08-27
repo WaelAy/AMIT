@@ -1,2 +1,3 @@
 main:
-	gcc main.c "SDB/SDB.C" "SDB_APP/SDB_APP.C"
+	gcc  "SDB/SDB.c" "SDB_APP/SDB_APP.c" main.c  -o student_app 
+	

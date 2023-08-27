@@ -1,7 +1,7 @@
 #ifndef _SDB_
 #define _SDB_
 #include "../STD.h"
-#include<stdio.h>
+#define DataBaseSize 10
 
 typedef struct SimpleDb 
 { 
@@ -16,15 +16,15 @@ typedef struct SimpleDb
 
 } student; 
 
-student DataBase[10] = {0};
 
-bool SDB_IsFull ();
+
+Bool SDB_IsFull();
 uint8 SDB_GetUsedSize();
-bool SDB_AddEntry();
-void SDB_DeletEntry (uint32 id);
-bool SDB_ReadEntry (uint32 id);
-void SDB_GetList (uint8 * count, uint32 * list);
-Bool SDB_IsIdExist (uint32 id);
+Bool SDB_AddEntry();
+void SDB_DeletEntry(uint32 id);
+Bool SDB_ReadEntry(uint32 id);
+void SDB_GetList(uint8 * count, uint32 * list);
+Bool SDB_IsIdExist(uint32 id);
 
 
 

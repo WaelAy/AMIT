@@ -1,6 +1,6 @@
 #ifndef _SDB_
 #define _SDB_
-#include "../STD.h"
+#include "STD.h"
 #define DataBaseSize 10
 
 typedef struct SimpleDb 

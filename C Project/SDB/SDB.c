@@ -80,10 +80,14 @@ C1:
     }
 
 
-
+C2_Scan:
 
     printf("Please Enter Course 2 ID: ");
     scanf("%d",&DataBase[NumberOfStudents].Course2_ID);
+    if(DataBase[NumberOfStudents].Course2_ID == DataBase[NumberOfStudents].Course1_ID){
+            printf("Course Already added!\n");
+            goto C2_Scan;
+        }
 C2:
     printf("Please Enter Course 2 Grade: ");
     scanf("%d",&DataBase[NumberOfStudents].Course2_grade);
@@ -94,9 +98,15 @@ C2:
     }
 
 
-
+C3_Scan:
     printf("Please Enter Course 3 ID: ");
     scanf("%d",&DataBase[NumberOfStudents].Course3_ID);
+    if(DataBase[NumberOfStudents].Course3_ID == DataBase[NumberOfStudents].Course2_ID ||
+        DataBase[NumberOfStudents].Course3_ID == DataBase[NumberOfStudents].Course1_ID ||
+        DataBase[NumberOfStudents].Course2_ID == DataBase[NumberOfStudents].Course1_ID){
+            printf("Course Already added!\n");
+            goto C3_Scan;
+        }
 C3:
     printf("Please Enter Course 3 Grade: ");
     scanf("%d",&DataBase[NumberOfStudents].Course3_grade);
@@ -118,6 +128,10 @@ C3:
 /*delete the student data with 
 the given id. */
 void SDB_DeletEntry(uint32 id){
+    if(!NumberOfStudents){
+        printf("Error the database is Empty!");
+        return;
+    }
     for (int i = 0; i < DataBaseSize; i++)
     {
         if (id == DataBase[i].Student_ID){
@@ -139,6 +153,10 @@ void SDB_DeletEntry(uint32 id){
 searching on his data by the given id*/
 Bool SDB_ReadEntry(uint32 id)
 {
+    if(!NumberOfStudents){
+        printf("The Database is Empty");
+        return False;
+    }
     for (int i = 0; i < DataBaseSize; i++)
     {
         if (id == DataBase[i].Student_ID){
@@ -163,6 +181,7 @@ Bool SDB_ReadEntry(uint32 id)
         }
 
     }
+    printf("Error ID doesn't Exist!\n");
     return False;
 }
 
@@ -184,9 +203,9 @@ void SDB_GetList(uint8 * count, uint32 * list){
             printf("%d\n",DataBase[i].Student_ID);
             printf("Year: ");
             printf("%d\n",DataBase[i].Student_year);
-            printf("PCourse 1 ID: ");
+            printf("Course 1 ID: ");
             printf("%d\n",DataBase[i].Course1_ID);
-            printf("PCourse 1 Grade: ");
+            printf("Course 1 Grade: ");
             printf("%d\n",DataBase[i].Course1_grade);
             printf("Course 2 ID: ");
             printf("%d\n",DataBase[i].Course2_ID);

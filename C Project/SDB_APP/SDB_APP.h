@@ -1,8 +1,8 @@
 #ifndef _SDB_APP_
 #define _SDB_APP_
 #include<stdio.h>
-#include "../STD.h"
-#include".././SDB/SDB.h"
+#include "STD.h"
+#include "SDB.h"
 
 
 typedef enum {

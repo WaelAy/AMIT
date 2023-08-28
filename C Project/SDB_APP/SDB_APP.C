@@ -62,7 +62,7 @@ void SDB_action (uint8 choice){
             SDB_IsFull();
             break;
         default:
-        printf("Error Invalid input!");
+        printf("Error Invalid input!\n");
             break;
         }
 }

@@ -26,6 +26,7 @@ void SDB_APP(){
 void SDB_action (uint8 choice){
     uint32 read,id;
     uint8 nOfstudent;
+    
     switch (choice)
         {
         case AddEntry:
@@ -50,7 +51,7 @@ void SDB_action (uint8 choice){
             printf("Enter ID to be read:");
             scanf("%u",&id);
             if(SDB_IsIdExist(id))
-                printf("\nIt Exists!");
+                printf("It Exists!\n");
             break;
         case DeleteStudata:
             
@@ -59,10 +60,14 @@ void SDB_action (uint8 choice){
             SDB_DeletEntry(id);
             break;
         case isFull:
-            SDB_IsFull();
+            if(SDB_IsFull())
+                printf("The Database is FULL!\n");
+            else
+                printf("Database is NOT full\n");
+            
             break;
         default:
-        printf("Error Invalid input!\n");
+            printf("Error Invalid input!\n");
             break;
         }
 }

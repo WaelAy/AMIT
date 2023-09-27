@@ -9,10 +9,9 @@
 
 #define ADC_ADJUST_LEFT ADC_ENABLE
 
-#define ADC_MODE ADC_SINGLE_CONVERSION_MODE  
 
-/* If single converstion mode is active this bit won't have any effect */
-#define ADC_AUTO_TRIGGER_SOURCE 0
+
+
 
 
 

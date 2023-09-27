@@ -50,14 +50,7 @@
 
 
 
-#define ADC_FREE_RUNNING_MODE   0
-#define ADC_ANALOG_COMPARTOR    1
-#define ADC_EXTI_1              2
-#define ADC_T0_COMPARE_MATCH    3
-#define ADC_T0_OVERFLOW         4
-#define ADC_T1_COMPARE_MATCH_B  5
-#define ADC_T1_OVERFLOW         6
-#define ADC_T1_CAPTURE_EVENT    7
+
 
 #define ADC_ENABLE 1
 

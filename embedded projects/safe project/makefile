@@ -30,5 +30,5 @@ clean:
 	@rm -f Debug/*.hex
 
 compile2:
-	@${CC} ${CFLAGS} main.c dio/dio.c APP/app.c lcd/lcd.c keypad/keypad.c adc/adc.prog.c LM45/lm45.c -o Debug/a.elf
+	@${CC} ${CFLAGS} main.c dio/dio.c APP/app.c lcd/lcd.c keypad/keypad.c adc/adc.prog.c LM45/lm45.c GIE/GIE.c -o Debug/a.elf
 	@${OBJCOPY} -j .data -j .text -O ihex Debug/a.elf Debug/flash2.hex

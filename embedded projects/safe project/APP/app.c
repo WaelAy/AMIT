@@ -3,6 +3,7 @@
 
 #include "../dio/dio.h"
 #include "../adc/adc.lib.h"
+#include "../GIE/GIE.h"
 
 #include "../lcd/lcd.lib.h"
 #include "../keypad/keypad.lib.h"
@@ -10,6 +11,13 @@
 
 
 #include "app.h"
+
+#define APP_MAIN_MENU_       0
+#define APP_LED_             1
+#define APP_TEMPERATURE_     2
+#define APP_MOTOR_           3
+
+
 
 static char *safe_password = "123/Cx";
 static u8 state = 0;
@@ -24,7 +32,10 @@ static Error_State APP_Auth();
 Error_State APP_INIT(){
     LCD_Init();
     Keypad_init();
-    ADC_enuADCinit(ADC_CHANNEL_0,ADC_SINGLE_CONVERSION_MODE);
+    GIE_vidEnable();
+    ADC_enuADCinit(ADC_CHANNEL_0);
+    ADC_enuAutoTriggerEnable(ADC_FREE_RUNNING_MODE);
+    ADC_enuEnableInterrupt();
     dio_init(PA,STD_PIN3,OUTPUT);
     dio_init(PC,STD_PIN3,OUTPUT);
     dio_init(PA,STD_PIN2,OUTPUT);
@@ -41,13 +52,13 @@ Error_State APP_LOGIC(){
     while (1)
     {
         if (state){
-            if(state == 1){
+            if(state == APP_LED_){
                 APP_LED();
             }
-            else if(state == 2){
+            else if(state == APP_TEMPERATURE_){
                 APP_TEMP();
             }
-            else if(state == 3){
+            else if(state == APP_MOTOR_){
                 APP_MOTOR();
             }
         }else
@@ -60,19 +71,23 @@ Error_State APP_LOGIC(){
 }
 
 static Error_State APP_TEMP(){
-    LCD_Clear();
+    
 
     u16 local_u16temp;
+    LCD_Clear();
     LCD_Display("Temp= ");
-    LM45_read(&local_u16temp);
-    LCD_Displayint(local_u16temp);
+    LCD_Set_Position(1,9);
     LCD_Display("C");
     LCD_Set_Position(2,1);
     LCD_Display("1-Back");
-
     u8 key = KEYPAD_NOT_PRESSED;
-    while (key == KEYPAD_NOT_PRESSED)
+    while (key == KEYPAD_NOT_PRESSED){
         Keypad_readKey(&key);
+        LCD_Set_Position(1,7);
+        LM45_read(&local_u16temp);
+        LCD_Displayint(local_u16temp);
+        _delay_ms(300);
+    }
     
     if (key == '1')
     {
@@ -86,8 +101,9 @@ static Error_State APP_TEMP(){
         LCD_Set_Position(2,3);
         LCD_Display("key input!");
         _delay_ms(800);
-        state = 2;
+        state = APP_TEMPERATURE_;
     } 
+
     return ES_OK;   
 }
 
@@ -106,18 +122,18 @@ static Error_State APP_MOTOR(){
 
     if(key == '1'){
         dio_write(PA,STD_PIN2,HIGH);
-        state = 3;
+        state = APP_MOTOR_;
         return ES_OK;
     }
 
     if(key == '2'){
         dio_write(PA,STD_PIN2,LOW);
-        state = 3;
+        state = APP_MOTOR_;
         return ES_OK;
     }
 
     if(key == '3'){
-        state = 0;
+        state = APP_MAIN_MENU_;
         return ES_OK;
     }
 
@@ -127,7 +143,7 @@ static Error_State APP_MOTOR(){
         LCD_Set_Position(2,3);
         LCD_Display("key input!");
         _delay_ms(800);
-        state = 3;
+        state = APP_MOTOR_;
         return ES_OK;
     }
     return ES_OK;
@@ -148,18 +164,18 @@ static Error_State APP_LED(){
 
     if(key == '1'){
         dio_write(PC,STD_PIN3,HIGH);
-        state = 1;
+        state = APP_LED_;
         return ES_OK;
     }
 
     if(key == '2'){
         dio_write(PC,STD_PIN3,LOW);
-        state = 1;
+        state = APP_LED_;
         return ES_OK;
     }
 
     if(key == '3'){
-        state = 0;
+        state = APP_MAIN_MENU_;
         return ES_OK;
     }
 
@@ -172,6 +188,7 @@ static Error_State APP_LED(){
         state = 1;
         return ES_OK;
     }
+
     return ES_OK;
 }
 
@@ -207,7 +224,7 @@ static Error_State APP_main_menu(){
         LCD_Display("Error invalid ");
         LCD_Set_Position(2,3);
         LCD_Display("key input!");
-        state = 0;
+        state = APP_MAIN_MENU_;
         return ES_OK;
     }
 
@@ -220,7 +237,7 @@ static Error_State APP_Auth(){
     LCD_Set_Position(1,2);
     LCD_Display("Password:");
     LCD_Set_Position(2,1);
-
+    LCD_show_cursor();
     u8 key = KEYPAD_NOT_PRESSED;
     
     char given_password[16];
@@ -250,7 +267,7 @@ static Error_State APP_Auth(){
         if(number_of_entries > 2){
             LCD_Clear();
             LCD_Display("7aramy"); 
-
+            LCD_hide_cursor();
             while (1)
             {
                 dio_write(STD_PORTA,STD_PIN3,HIGH);
@@ -263,6 +280,7 @@ static Error_State APP_Auth(){
         else{
             LCD_Clear();
             LCD_Display("WRONG PASSWORD");
+            LCD_hide_cursor();
             _delay_ms(2000);
             number_of_entries++;
             APP_Auth();
@@ -280,6 +298,7 @@ static Error_State APP_Welcome(){
     LCD_Display("Welcome");
     LCD_Set_Position(2,4);
     LCD_Display("Loading");
+    LCD_hide_cursor();
     _delay_ms(1000);
     return ES_OK;
 }

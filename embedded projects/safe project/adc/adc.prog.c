@@ -5,18 +5,19 @@
 #include "adc.lib.h"
 #include "adc.conf.h"
 
+static void (*local_funptrIntTriggered)(void*) = NULL;
+static void *local_vfunParameterptr = NULL;
 
-
-Error_State ADC_enuADCinit(u8 Copy_u8channel,u8 Copy_u8Mode){
+Error_State ADC_enuADCinit(u8 Copy_u8channel){
     if (Copy_u8channel > ADC_NUMBER_OF_CHANNELS || Copy_u8channel < 0){
         return ES_NOK;
     } 
 
     dio_init(ADC_PORT_NUMBER,Copy_u8channel,INPUT);
 
-    if(Copy_u8Mode == ADC_SINGLE_CONVERSION_MODE){
-        ADMUX = Copy_u8Mode;
-    }
+    /*Setting ADC Channel*/
+    ADMUX = Copy_u8channel;
+
    
     /*ADC Left shift*/
     if(ADC_ADJUST_LEFT == ADC_ENABLE){
@@ -32,11 +33,6 @@ Error_State ADC_enuADCinit(u8 Copy_u8channel,u8 Copy_u8Mode){
     /*ADC Enable*/
     ADCSRA |= (1<<ADEN);
 
-    #if (ADC_MODE == ADC_AUTO_TRIGGER_MODE)
-        ADCSRA |= (1<<ADATE);
-        SFIOR = (ADC_AUTO_TRIGGER_MODE<<ADTS0) | SFIOR;
-
-    #endif
 
     
     ADCSRA = (ADC_PRESCALER<<ADPS0) | ADCSRA;
@@ -51,12 +47,19 @@ Error_State ADC_Read(u16 *Copy_u16Value){
         return ES_NOK;
     }
     
-    /*ADC Start Conversion */
-    ADCSRA |= (1<<ADSC);
 
-    /*Waiting  to End Conversion */
-    while ((ADCSRA & (1<<ADIF))==0);
-    
+    /*If the ADATE bit is not set then its single convertion mode*/
+    if((ADCSRA & (1<<ADATE))==0){
+
+        /*ADC Start Conversion */
+        ADCSRA |= (1<<ADSC);
+
+        /*Waiting  to End Conversion */
+        while ((ADCSRA & (1<<ADIF))==0);
+
+
+    }
+
     #if ADC_ADJUST_LEFT == ADC_ENABLE
         u8 local_u8lowernipple = ADCL>>6;
         *Copy_u16Value = ADCH<<2;
@@ -75,6 +78,94 @@ Error_State ADC_Read(u16 *Copy_u16Value){
     return ES_OK;
 }
 
+Error_State ADC_enuAutoTriggerEnable(u8 Copy_u8AutoTriggerSource){
+
+        static bool Local_u8firstTimeFlag = false;
+
+
+        /*Setting the auto trigger bit*/  
+        ADCSRA |= (ADC_ENABLE<<ADATE);
+
+        /*Setting the auto trigger source*/
+        SFIOR |= Copy_u8AutoTriggerSource<<ADTS0;
+
+
+        /*Starting the first Convertion*/
+        ADCSRA |= (1<<ADSC);
+
+        /*Setting the flag to wait for 25 cycles*/
+        if (Local_u8firstTimeFlag == false){
+            Local_u8firstTimeFlag = true;
+            while ((ADCSRA & (1<<ADIF))==0);
+
+        }
+
+    return ES_OK;
+}
+
+
+Error_State ADC_enuSetCallBackFun(void (*Copy_funptr)(void*),void *Copy_vptrParameter){
+
+    if(Copy_funptr == NULL){
+
+        local_funptrIntTriggered = Copy_funptr;
+        Copy_vptrParameter = local_vfunParameterptr;
+    }
+    return ES_OK;
+
+}
+
+
+Error_State ADC_enuEnableInterrupt(){
+    
+    ADCSRA |= (ADC_ENABLE<<ADIE);
+
+    return ES_OK;
+}
+
+Error_State ADC_enuDisableInterrupt(){
+    ADCSRA &= ~(ADC_ENABLE<<ADIE);
+
+    return ES_OK;
+}
+
+
+void __vector_16 (void) __attribute__((signal));
+void __vector_16(void){
+
+    if(local_funptrIntTriggered != NULL){
+        local_funptrIntTriggered(local_vfunParameterptr);
+    }
+    
+}
 
 
 
+Error_State ADC_enuEnable(void)
+
+{
+    ADCSRA |= (ADC_ENABLE<<ADEN);
+    return ES_OK;
+}
+
+
+Error_State ADC_enuDisable(void)
+
+{
+    ADCSRA &=~(ADC_ENABLE<<ADEN);
+    return ES_OK;
+}
+
+
+Error_State ADC_enuChangeChannel(u8 Copy_u8NewChannel)
+{
+    if (Copy_u8NewChannel > ADC_CHANNEL_7)
+    {
+        return ES_NOK;
+    }
+    
+    /*Changing ADC input Channel*/
+    ADMUX |= Copy_u8NewChannel;  
+
+    return ES_OK;
+}

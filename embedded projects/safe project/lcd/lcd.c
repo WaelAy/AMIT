@@ -186,3 +186,12 @@ Error_State LCD_Displayint(s32 Copy_s32Number){
 
     return ES_OK;
 }
+
+
+
+Error_State LCD_show_cursor(){
+    LCD_send4B(0,0,0,0,COMMAND);
+    LCD_send4B(1,1,1,1,COMMAND);
+
+    return ES_OK;
+}

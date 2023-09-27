@@ -23,6 +23,8 @@ Error_State LCD_Set_Position(u8 row, u8 column);
 Error_State LCD_char(u8 content);
 /*Function to hide cursor from LCD*/
 Error_State LCD_hide_cursor();
+/*Function to show cursor from LCD*/
+Error_State LCD_show_cursor();
 /*Function to print integers*/
 Error_State LCD_Displayint(s32 Copy_s32Number);
 

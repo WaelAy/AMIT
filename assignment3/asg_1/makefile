@@ -30,5 +30,5 @@ clean:
 	@rm -f Debug/*.hex
 
 compile2:
-	@${CC} ${CFLAGS} way_2.c dio/dio.c -o Debug/a.elf
+	@${CC} ${CFLAGS} APP/way_2.c MCAL/dio/dio.c -o Debug/a.elf
 	@${OBJCOPY} -j .data -j .text -O ihex Debug/a.elf Debug/way_2.hex

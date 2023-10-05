@@ -30,5 +30,5 @@ clean:
 	@rm -f Debug/*.hex
 
 compile2:
-	@${CC} ${CFLAGS} main.c  dio/dio.c EXTI/ExInt.c EXTI/Extint.config.c GIE/GIE.c  -o Debug/a.elf
+	@${CC} ${CFLAGS} main.c  MCAL/dio/dio.c MCAL/EXTI/ExInt.c MCAL/EXTI/Extint.config.c MCAL/GIE/GIE.c  -o Debug/a.elf
 	@${OBJCOPY} -j .data -j .text -O ihex Debug/a.elf Debug/flash2.hex

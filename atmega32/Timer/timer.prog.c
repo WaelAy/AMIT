@@ -11,7 +11,8 @@ void *Local_vptrParamOFC0 = NULL;
 
 Error_State Timer_init(){
 
-
+    TCCR0 |= (BIT_MASK<<CS00);
+    TCCR0 |= (BIT_MASK<<CS01);
 
 
     return ES_OK;
@@ -99,6 +100,13 @@ Error_State Timer_setcallbackfun(void (*copy_vfunptrISR)(void*),void *vptr_param
 
     return ES_OK;
 }
+
+
+u8 Timer_CalculateTCNT(){
+    return TCNT0;
+}
+
+
 void __vector_6 (void)__attribute__((signal));
 void __vector_6(){
     if(Local_vfunPtrOFC0 != NULL){

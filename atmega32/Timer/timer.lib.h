@@ -8,7 +8,7 @@ Error_State Timer_delay_ms(u16 copy_u16NumberOfms);
 Error_State Timer_delay_us(u16 copy_u16NumberOfus);
 Error_State Timer_setcallbackfun(void (*copy_vfunptrISR)(void*),void *vptr_parameter);
 
-
+u8 Timer_CalculateTCNT();
 
 
 

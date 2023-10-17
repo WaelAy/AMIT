@@ -1,31 +1,39 @@
 #define F_CPU 16000000UL
-#include "std.h"
-#include <util/delay.h>
-#include "button/button.h"
-#include "dio/dio.h"
-#include "POV_7seg/POV_7seg.h"
-#include "lcd/lcd.lib.h"
-#include <avr/io.h>
-#include "keypad/keypad.lib.h"
 
+//#include <avr/io.h>
+#include "Timer/timer.lib.h"
+#include "dio/dio.h"
+#include "GIE/GIE.h"
 
 int main(){
-    LCD_Init();
-    Keypad_init();
-    u8 key_val;
-    /*main logic*/
+
+    Timer_init();
+    dio_init(STD_PORTB,STD_PIN2,OUTPUT);
+
     while (1)
     {
-        
-        Keypad_readKey(&key_val);
-        if(key_val != KEYPAD_NOT_PRESSED){
-            LCD_char(key_val);
-            key_val = KEYPAD_NOT_PRESSED;
-        }
-
-	    
-        
+        dio_toggle(STD_PORTB,STD_PIN2);
+        Timer_delay_us(100UL);
     }
+    
+
+    // TCCR0 |= (1<<WGM00);
+    // TCCR0 |= (1<<WGM01);
+    // TCCR0 |= (1<<COM01);
+
+    // //uint32_t F_PWM = 16000000 / (256UL);
+
+    // uint8_t Duty_Cycle = 35;
+    // OCR0 =  255 * Duty_Cycle / 100;
+    // TCCR0 |= (1<<CS02);
+
+    // DDRB |= (1<<3);
+    // DDRB |= (1<<2);
+    // while (1){
+    //     PORTB ^= (1<<2);
+    //     for(int32_t x = 0; x < 999999; x++);
+    // };
+    
 
 
     return 0;

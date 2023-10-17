@@ -138,3 +138,37 @@ dio_state dio_read(u8 portNum,u8 pinNum,u8 *value)
 	
 }
 
+
+dio_state dio_toggle(u8 portNum,u8 pinNum){
+
+if (pinNum > 7 || pinNum < 0)
+		return DIO_ERROR;
+
+
+
+		switch (portNum){
+			case PA:
+				PORTA ^= (BIT_MASK<<pinNum);
+					
+				break;	
+				
+			case PB:
+				PORTB ^= (BIT_MASK<<pinNum);
+					
+				break;
+			case PC:
+				PORTC ^= (BIT_MASK<<pinNum);
+				break;
+			case PD:
+				PORTD ^= (BIT_MASK<<pinNum);
+				
+				break;
+				
+			default:
+			return DIO_ERROR;
+				break;	
+		}
+		return DIO_OK;
+
+
+}

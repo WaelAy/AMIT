@@ -1,5 +1,5 @@
 #include <util/delay.h>
-
+#include "../std.h"
 #include "../dio/dio.h"
 
 #include "keypad.lib.h"

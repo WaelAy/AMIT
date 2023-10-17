@@ -148,3 +148,50 @@ Error_State LCD_char(u8 content){
 
     return ES_OK;
 }
+
+
+Error_State LCD_hide_cursor(){
+
+
+    LCD_send4B(0,0,0,0,COMMAND);
+    LCD_send4B(1,1,0,0,COMMAND);
+
+    return ES_OK;
+}
+
+Error_State LCD_Displayint(s32 Copy_s32Number){
+    if(Copy_s32Number < 0){
+        LCD_Display("-");
+        Copy_s32Number = Copy_s32Number * -1;
+    }
+
+    u32 local_s32temp = Copy_s32Number;
+    u32 local_u32iter = 10;
+    while (local_s32temp > 100)
+    {
+        local_s32temp /= 10; 
+        local_u32iter *=10; 
+    }
+
+
+    while (local_u32iter > 0)
+    {
+        u8 Local_u8ASCIINum = ((Copy_s32Number/local_u32iter)%10) + 48;
+        LCD_send(Local_u8ASCIINum,CHAR);
+        local_u32iter /= 10;   
+          
+    }
+    
+
+
+    return ES_OK;
+}
+
+
+
+Error_State LCD_show_cursor(){
+    LCD_send4B(0,0,0,0,COMMAND);
+    LCD_send4B(1,1,1,1,COMMAND);
+
+    return ES_OK;
+}

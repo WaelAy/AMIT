@@ -20,4 +20,6 @@ typedef enum DIO {DIO_OK,DIO_ERROR} dio_state;
 dio_state dio_init(u8 portNum,u8 pinNum, u8 direction); // function to initialize DIO pin.
 dio_state dio_write(u8 portNum,u8 pinNum,u8 value); // function to set the pin's value.
 dio_state dio_read(u8 portNum,u8 pinNum, u8 *value); // function to read the pin's value.
+dio_state dio_toggle(u8 portNum,u8 pinNum); // function to set the pin's value.
+
 #endif
